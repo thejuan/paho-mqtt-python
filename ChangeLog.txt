@@ -8,6 +8,9 @@ v1.1 - 2015-01-30
   detection of the fault. Closes #451735.
 - Fix incorrect handling of queued messages after reconnecting. Closes
   #452672.
+- Fix possible race condition if the connection in loop_start() does not
+  complete before loop_stop() is called, meaning the network thread never
+  ends. Closes #448428. Thanks to Kees Bakker.
 
 
 v1.0.2 - 2014-09-13
