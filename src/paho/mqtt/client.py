@@ -744,7 +744,11 @@ class Client(object):
                 ca_certs=self._tls_ca_certs,
                 cert_reqs=self._tls_cert_reqs,
                 ssl_version=self._tls_version,
-                ciphers=self._tls_ciphers)
+                ciphers=self._tls_ciphers,
+                do_handshake_on_connect=False)
+            self._ssl.settimeout(10)
+            self._ssl.do_handshake()
+            self._ssl.setblocking(0)
 
             if self._tls_insecure is False:
                 if sys.version_info[0] < 3 or (sys.version_info[0] == 3 and sys.version_info[1] < 2):
@@ -1511,6 +1515,9 @@ class Client(object):
                     return MQTT_ERR_AGAIN
                 print(err)
                 return 1
+            except Exception as error:
+                self._current_out_packet_mutex.release()
+                raise error
 
             if write_length > 0:
                 packet['to_process'] = packet['to_process'] - write_length
